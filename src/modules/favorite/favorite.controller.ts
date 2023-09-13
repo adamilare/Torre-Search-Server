@@ -1,30 +1,58 @@
 import { NextFunction, Request, Response } from 'express';
 import { apiResponse } from '../../utils/response';
 import logger from '../../utils/logger';
-
-export default {
-  addFavorite,
-  getfavorites,
-};
+import {
+  allPeople,
+  createPerson,
+  deleteFavoriteById,
+} from './favorite.service';
+import { PersonEntryType } from './favorite.model';
 
 async function addFavorite(req: Request, res: Response, next: NextFunction) {
   logger.info('addFavorite controller called');
+  logger.info(req.body);
+
+  const person = req.body;
+  person.entryType = PersonEntryType.LIKE;
 
   try {
-    return apiResponse(res, 'Favorite added successfully', null, 201);
+    await createPerson(person);
+    const allNewFavorites = await allPeople(person.entryType);
+
+    return apiResponse(
+      res,
+      'Favorite added successfully',
+      allNewFavorites,
+      201,
+    );
   } catch (err) {
     next(err);
   }
 }
 
-async function getfavorites(req: Request, res: Response, next: NextFunction) {
+async function getFavorites(req: Request, res: Response, next: NextFunction) {
   logger.info('getFavorites controller called');
 
   try {
-    return apiResponse(res, 'All favorites', null, 201);
+    const favorites = await allPeople(PersonEntryType.LIKE);
+    return apiResponse(res, 'All favorites', favorites, 201);
   } catch (err) {
     next(err);
   }
 }
 
-export { addFavorite, getfavorites };
+async function removeFavorite(req: Request, res: Response, next: NextFunction) {
+  logger.info('removeFavorite controller called');
+  const { ardaId } = req.body;
+  logger.info(req.body);
+  logger.info(req.body.ardaId);
+
+  try {
+    await deleteFavoriteById(ardaId);
+    return apiResponse(res, 'Favorite removed successfully', null, 201);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { addFavorite, getFavorites, removeFavorite };
