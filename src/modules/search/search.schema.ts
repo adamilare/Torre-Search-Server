@@ -4,14 +4,13 @@ import { processRequestBody } from 'zod-express-middleware';
 const searchSchema = () => {
   const body = object({
     query: string({ required_error: 'Search string is required' }),
-    identityType: string(),
-    meta: boolean(),
-    limit: number(),
-    torreGgId: string(),
-    excludeContacts: boolean(),
-    excludedPeople: array(string()),
+    identityType: string().default('person'),
+    meta: boolean().default(false),
+    limit: number().default(10),
+    torreGgId: string().default('1574270'),
+    excludeContacts: boolean().default(true),
+    excludedPeople: array(string()).default([]),
   });
-
   return processRequestBody(body);
 };
 
