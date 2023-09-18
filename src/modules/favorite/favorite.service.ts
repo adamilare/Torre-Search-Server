@@ -7,13 +7,16 @@ export async function createPerson(person: Person) {
   });
   if (!existingFavorite) {
     return await PersonModel.create(person);
-  }
-  // should update timestamp if recent search
-  throw new Error('Person with the same id already exists');
+  } else return null;
 }
 
 export async function deleteFavoriteById(id: number) {
-  await PersonModel.findOneAndDelete({ ardaId: id });
+  await PersonModel.findOneAndDelete({
+    ardaId: id,
+    entryType: PersonEntryType.LIKE,
+  });
+
+  return await allPeople(PersonEntryType.LIKE);
 }
 
 export async function allPeople(
