@@ -12,6 +12,6 @@ router.post('/', personSchema(), addFavorite);
 
 router.get('/', getFavorites);
 
-router.delete('/', removeFavoriteSchema(), removeFavorite);
+router.delete('/:ardaId', removeFavoriteSchema(), removeFavorite);
 
 export default router;

@@ -10,7 +10,6 @@ import { PersonEntryType } from './favorite.model';
 
 async function addFavorite(req: Request, res: Response, next: NextFunction) {
   logger.info('addFavorite controller called');
-  logger.info(req.body);
 
   const person = req.body;
   person.entryType = PersonEntryType.LIKE;
@@ -43,13 +42,11 @@ async function getFavorites(req: Request, res: Response, next: NextFunction) {
 
 async function removeFavorite(req: Request, res: Response, next: NextFunction) {
   logger.info('removeFavorite controller called');
-  const { ardaId } = req.body;
-  logger.info(req.body);
-  logger.info(req.body.ardaId);
+  const { ardaId } = req.params;
 
   try {
-    await deleteFavoriteById(ardaId);
-    return apiResponse(res, 'Favorite removed successfully', null, 201);
+    const favorites = await deleteFavoriteById(parseInt(ardaId));
+    return apiResponse(res, 'Favorite removed successfully', favorites, 201);
   } catch (err) {
     next(err);
   }

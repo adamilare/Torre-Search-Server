@@ -1,5 +1,8 @@
 import z, { object, string, number } from 'zod';
-import { processRequestBody } from 'zod-express-middleware';
+import {
+  processRequestBody,
+  processRequestParams,
+} from 'zod-express-middleware';
 
 const personSchema = () => {
   const body = object({
@@ -15,10 +18,10 @@ const personSchema = () => {
 };
 
 const removeFavoriteSchema = () => {
-  const body = object({
-    ardaId: number({ required_error: 'ardaId is required' }),
+  const params = object({
+    ardaId: string({ required_error: 'ardaId is required' }),
   });
-  return processRequestBody(body);
+  return processRequestParams(params);
 };
 
 export { personSchema, removeFavoriteSchema };
